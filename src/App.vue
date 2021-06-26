@@ -1,47 +1,47 @@
 <template>
-  <main>
-    <div>
-      <Search />
-      <List
-        v-for="tittle in titles"
-        :key="tittle.charCodeAt()"
-        :name="tittle"
-        :namedItems="listItems(tittle)"
-      />
-    </div>
-    <Form />
+  <main class="main">
+    <button @click="isSorted">SORT?</button>
+    <AppForm />
+    <AppSearch />
+    <AppSort />
+    <AppList
+      v-for="node in nodes"
+      :key="node.name.charCodeAt()"
+      :title="node.name"
+      :items="node.items"
+    />
   </main>
+  <AppLoader />
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import List from "./components/List/List.vue";
-import Form from "./components/Crud/Form.vue";
-import Search from "./components/Search/Search.vue";
+import { FETCH_ITEMS, SORT_NODE_ITEMS } from "./store/actions.type";
+import { mapGetters } from "vuex";
+import AppList from "./components/List.vue";
+import AppForm from "./components/AddForm.vue";
+import AppLoader from "./components/Loader.vue";
+import AppSearch from "./components/Search.vue";
+import AppSort from "./components/Sort.vue";
 
 export default {
   name: "App",
   components: {
-    List,
-    Form,
-    Search,
+    AppSearch,
+    AppList,
+    AppForm,
+    AppLoader,
+    AppSort,
   },
   methods: {
-    ...mapActions(["GET_DATA", "CREATE_SEARCHEBLE_DATA", "CREATE_TITLES"]),
+    isSorted() {
+      console.log(this.$store.dispatch(SORT_NODE_ITEMS));
+    },
   },
   computed: {
-    ...mapGetters({
-      titles: "TITLES_ARRAY",
-      listItems: "GET_ITEMS_BY_TITLE",
-      fromList: "fromListCompSearchValue",
-    }),
+    ...mapGetters(["nodes"]),
   },
   created() {
-    this.GET_DATA();
-  },
-  mounted() {
-    this.CREATE_SEARCHEBLE_DATA();
-    this.CREATE_TITLES();
+    this.$store.dispatch(FETCH_ITEMS);
   },
 };
 </script>
@@ -63,7 +63,8 @@ ul {
   padding: 9px;
   min-height: 100vh;
 }
-main {
+.main {
   display: flex;
+  flex-direction: column;
 }
 </style>

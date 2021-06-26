@@ -1,8 +1,8 @@
 import { createStore } from "vuex";
 
-import { list } from "./list/index";
-import { crud } from "./crud/index";
-import { search } from "./search/index";
+import list from "./list";
+import sort from "./sort";
+import search from "./search";
 
 export default createStore({
   state: {},
@@ -10,7 +10,7 @@ export default createStore({
   actions: {},
   modules: {
     list,
-    crud,
+    sort,
     search,
   },
 });
