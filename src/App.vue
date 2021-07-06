@@ -1,6 +1,5 @@
 <template>
   <main class="main">
-    <button @click="isSorted">SORT?</button>
     <AppForm />
     <AppSearch />
     <AppSort />
@@ -12,16 +11,18 @@
     />
   </main>
   <AppLoader />
+  <ErrorMessage />
 </template>
 
 <script>
-import { FETCH_ITEMS, SORT_NODE_ITEMS } from "./store/actions.type";
+import { FETCH_ITEMS } from "./store/actions.type";
 import { mapGetters } from "vuex";
 import AppList from "./components/List.vue";
 import AppForm from "./components/AddForm.vue";
 import AppLoader from "./components/Loader.vue";
 import AppSearch from "./components/Search.vue";
 import AppSort from "./components/Sort.vue";
+import ErrorMessage from "./components/ErrorMessage.vue";
 
 export default {
   name: "App",
@@ -31,11 +32,7 @@ export default {
     AppForm,
     AppLoader,
     AppSort,
-  },
-  methods: {
-    isSorted() {
-      console.log(this.$store.dispatch(SORT_NODE_ITEMS));
-    },
+    ErrorMessage,
   },
   computed: {
     ...mapGetters(["nodes"]),
@@ -66,5 +63,6 @@ ul {
 .main {
   display: flex;
   flex-direction: column;
+  width: fit-content;
 }
 </style>

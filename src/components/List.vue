@@ -2,7 +2,7 @@
   <ul class="list" v-if="items.length > 0">
     <li class="list__title">
       {{ title }}
-      {{ items.length }}
+      ({{ items.length }})
       <button class="list__button" @click="toggleList">
         {{ buttonView }}
       </button>
@@ -62,7 +62,6 @@ export default {
 <style>
 .list {
   padding: 10px 2px;
-  max-width: fit-content;
 }
 .list__title {
   font-weight: 500;

@@ -8,15 +8,11 @@ export const clientService = axios.create({
 
 export const api = {
   getAllItems() {
-    return clientService.get("/brands").catch((error) => {
-      throw new Error(`MyApp ApiSevice ${error}`);
-    });
+    return clientService.get("/brands");
   },
 
   getItemByID(url, id) {
-    return clientService.get(`${url}/${id}`).catch((error) => {
-      throw new Error(`MyApp ApiSevice ${error}`);
-    });
+    return clientService.get(`${url}/${id}`);
   },
 
   createItem(config) {
@@ -28,8 +24,6 @@ export const api = {
   },
 
   deleteItem(id) {
-    return clientService.delete("/brand/" + id).catch((error) => {
-      throw new Error(`MyApp ApiSevice ${error}`);
-    });
+    return clientService.delete("/brand/" + id);
   },
 };

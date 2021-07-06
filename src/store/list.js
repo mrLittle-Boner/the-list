@@ -13,6 +13,7 @@ import {
   SET_LOADING_STATUS,
   SET_NODES,
   SET_TITLES,
+  SET_ERROR,
 } from "./mutations.type";
 
 const initialState = {
@@ -20,6 +21,7 @@ const initialState = {
   titles: [],
   nodes: [],
   loadingStatus: false,
+  errorStatus: "",
 };
 
 const state = { ...initialState };
@@ -27,12 +29,19 @@ const state = { ...initialState };
 const actions = {
   async [FETCH_ITEMS]({ dispatch, commit, state }) {
     commit(SET_LOADING_STATUS);
-    const resp = await api.getAllItems();
-    commit(SET_DATA, { data: resp.data });
-    dispatch(CREATE_TITLES);
-    dispatch(CREATE_NODES, state.data);
-    dispatch(SORT_NODE_ITEMS);
-    commit(SET_LOADING_STATUS);
+    api
+      .getAllItems()
+      .then((resp) => commit(SET_DATA, { data: resp.data }))
+      .then(() => dispatch(CREATE_TITLES))
+      .then(() => dispatch(CREATE_NODES, state.data))
+      .then(() => dispatch(SORT_NODE_ITEMS))
+      .then(() => commit(SET_LOADING_STATUS))
+      .catch((e) => commit(SET_ERROR, e.response.status));
+    // commit(SET_DATA, { data: resp.data });
+    // dispatch(CREATE_TITLES);
+    // dispatch(CREATE_NODES, state.data);
+    // dispatch(SORT_NODE_ITEMS);
+    // commit(SET_LOADING_STATUS);
   },
   [CREATE_TITLES]({ commit, state }) {
     let titles = [];
@@ -56,16 +65,23 @@ const actions = {
 
     commit(SET_NODES, { nodes });
   },
-  [ADD_ITEM]({ dispatch }, title) {
-    api.createItem({ title, main: true }).then(() => dispatch(FETCH_ITEMS));
+  [ADD_ITEM]({ dispatch, commit }, title) {
+    api
+      .createItem({ title, main: true })
+      .then(() => dispatch(FETCH_ITEMS))
+      .catch((e) => commit(SET_ERROR, e.response.status));
   },
-  [DELETE_ITEM]({ dispatch }, id) {
-    api.deleteItem(id).then(() => dispatch(FETCH_ITEMS));
+  [DELETE_ITEM]({ dispatch, commit }, id) {
+    api
+      .deleteItem(id)
+      .then(() => dispatch(FETCH_ITEMS))
+      .catch((e) => commit(SET_ERROR, e.response.status));
   },
-  [UPDATE_ITEM]({ dispatch }, params) {
+  [UPDATE_ITEM]({ dispatch, commit }, params) {
     api
       .updateItem(params.id, { title: params.title, main: params.isMain })
-      .then(() => dispatch(FETCH_ITEMS));
+      .then(() => dispatch(FETCH_ITEMS))
+      .catch((e) => commit(SET_ERROR, e.response.status));
   },
 };
 
@@ -82,6 +98,9 @@ const mutations = {
   [SET_LOADING_STATUS](state) {
     state.loadingStatus = !state.loadingStatus;
   },
+  [SET_ERROR](state, error) {
+    state.errorStatus = error;
+  },
 };
 
 const getters = {
@@ -96,6 +115,16 @@ const getters = {
   },
   loadingStatus(state) {
     return state.loadingStatus;
+  },
+  errorMessage(state) {
+    switch (state.errorStatus) {
+      case 404:
+        return "Item not found";
+      case 422:
+        return "Fill the input area";
+      case 500:
+        return "Server failure refresh the page";
+    }
   },
 };
 

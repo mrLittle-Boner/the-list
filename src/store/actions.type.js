@@ -9,3 +9,4 @@ export const UPDATE_ITEM = "updateItem";
 export const CHANGE_SORT_DIRECTION = "changeSortDirection";
 export const SEARCH_ITEMS = "searchItems";
 export const SORT_NODE_ITEMS = "sortNodeItems";
+export const UPDATE_SEARCH_VALUE = "updateSearchValue";

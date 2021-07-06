@@ -60,8 +60,13 @@ export default {
         title: this.inputTitle,
         isMain: this.inputMain,
       };
-      this.$store.dispatch(UPDATE_ITEM, data);
-      this.editable = false;
+      try {
+        this.$store.dispatch(UPDATE_ITEM, data);
+        this.editable = false;
+      } catch (e) {
+        console.log(e.message);
+        // (error) => commit(SET_ERROR, error.request.responseText);
+      }
     },
     openEditor() {
       this.editable = !this.editable;

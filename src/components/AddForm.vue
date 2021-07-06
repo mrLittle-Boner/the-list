@@ -1,6 +1,12 @@
 <template>
   <form class="app-form" @submit.prevent="submitForm">
-    <input class="app-form__input" v-model="addInputValue" type="text" />
+    <input
+      class="app-form__input"
+      v-model="addInputValue"
+      type="text"
+      placeholder="Some item title"
+      required
+    />
     <button class="app-form__button">Add Item</button>
   </form>
 </template>
@@ -16,8 +22,10 @@ export default {
   },
   methods: {
     submitForm() {
-      this.$store.dispatch(ADD_ITEM, this.addInputValue);
-      this.addInputValue = "";
+      if (this.addInputValue.trim()) {
+        this.$store.dispatch(ADD_ITEM, this.addInputValue.trim());
+        this.addInputValue = "";
+      }
     },
   },
 };
@@ -31,6 +39,7 @@ export default {
   border: none;
   border-radius: 3px 0px 0px 3px;
   padding: 0 10px;
+  flex-grow: 1;
 }
 .app-form__button {
   border: none;

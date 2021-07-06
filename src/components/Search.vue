@@ -1,7 +1,13 @@
 <template>
   <div class="search-wrapper">
-    <form @submit.prevent="searchItems" class="search">
-      <input class="search__input" v-model="searchValue" type="text" />
+    <form @submit.prevent="" class="search">
+      <input
+        class="search__input"
+        type="text"
+        :value="searchValue"
+        @input="updateSearch($event.target.value)"
+        placeholder="Search..."
+      />
       <button class="search__clear" type="button" @click="clearInput">
         <i class="fas fa-times"></i>
       </button>
@@ -19,27 +25,22 @@
 <script>
 import { mapGetters } from "vuex";
 import { CHANGE_CASE_SENSITIVE } from "../store/mutations.type";
-import { SEARCH_ITEMS } from "../store/actions.type";
+import { UPDATE_SEARCH_VALUE } from "../store/actions.type";
 export default {
   name: "AppSearch",
-  data() {
-    return {
-      searchValue: "",
-    };
-  },
   methods: {
     clearInput() {
-      this.searchValue = "";
+      this.$store.dispatch(UPDATE_SEARCH_VALUE, "");
     },
     toggleCaseSens() {
       this.$store.commit(CHANGE_CASE_SENSITIVE);
     },
-    searchItems() {
-      this.$store.dispatch(SEARCH_ITEMS, this.searchValue);
+    updateSearch(value) {
+      this.$store.dispatch(UPDATE_SEARCH_VALUE, value);
     },
   },
   computed: {
-    ...mapGetters(["caseSensitive"]),
+    ...mapGetters(["caseSensitive", "searchValue"]),
   },
 };
 </script>
@@ -47,11 +48,10 @@ export default {
 <style>
 .search {
   margin-top: 10px;
-  max-width: 250px;
   position: relative;
 }
 .search__input {
-  padding: 6px 20px 4px 5px;
+  padding: 8px 30px 8px 10px;
   border: none;
   border-radius: 4px;
   width: 100%;
@@ -59,15 +59,15 @@ export default {
 .search__clear {
   position: absolute;
   top: 0px;
-  width: 25px;
-  height: 25px;
   right: 0px;
+  width: 31px;
+  height: 31px;
   background-color: transparent;
   border: none;
   cursor: pointer;
 }
 .search__case-sense {
-  margin-top: 5px;
+  margin-top: 10px;
   background-color: grey;
   border: none;
   color: whitesmoke;
